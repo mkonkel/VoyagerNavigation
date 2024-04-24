@@ -8,36 +8,40 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import model.FirstScreenModel
 
 class FirstScreen : Screen {
 
     @Composable
     override fun Content() {
+        val screenModel = rememberScreenModel { FirstScreenModel() }
+
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Text("First screen")
-            FirstScreenButton()
+            Text(screenModel.screenTitle)
+            FirstScreenButton(screenModel)
         }
     }
 
     @Composable
-    private fun FirstScreenButton() {
+    private fun FirstScreenButton(screenModel: FirstScreenModel) {
         val navigator = LocalNavigator.currentOrThrow
 
         Button(
             onClick = {
-                navigator.push(SecondScreen("Hello from First Screen"))
+                navigator.push(SecondScreen(screenModel.greetings))
                 // infix call
                 // navigator push SecondScreen("Hello from First Screen")
             }
         ) {
-            Text("Second Screen")
+            Text(screenModel.buttonText)
         }
     }
 }

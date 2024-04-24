@@ -152,11 +152,7 @@ fun App() {
 The initial configuration is up and running, we can navigate between the screens and the data is preserved during the screen rotation.
 Let's run the project on both ***Android*** and ***iOS*** to see the results.
 
-
-
-
-
----
+![Navigation](/blog/images/voyager_navigation.gif "Navigation")
 
 Comparing to the [Decompose](https://github.com/mkonkel/DecomposeNavigation) Voyager also have its own ViewModel
 equivalent, called the [ScreenModel](https://voyager.adriel.cafe/screenmodel) but with some lates changes in compose
@@ -168,6 +164,25 @@ The ***ScreenModel*** is designed to store and manage UI-related data with lifec
 configuration changes. Unlike the ViewModel, the ScreenModel is just an interface. You can create a ***ScreenModel***
 only from the [Screen](https://voyager.adriel.cafe/navigation) component.
 
-TODO: Add the ScreenModel configuration here with basic business logic for resenting text, button clicks.
+```kotlin
+class FirstScreenModel : ScreenModel {
+    val screenTitle = "First screen"
+    val buttonText = "Second Screen"
+    val greetings = "Hello from First Screen"
+}
+```
+```kotlin
+class FirstScreen : Screen {
+
+    @Composable
+    override fun Content() {
+        val screenModel = rememberScreenModel { FirstScreenModel() }
+        ...
+        Text(screenModel.screenTitle)
+    }
+}
+```
+Now if we would have a text input and want to store the value we should use ***state*** inside the ***ScreenModel***. So it can be recreated after screen rotation.
+
 
 ### Summary
