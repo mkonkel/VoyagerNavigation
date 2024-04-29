@@ -68,7 +68,7 @@ class FirstScreen : Screen {
 
 ```kotlin
 data class SecondScreen(val greetings: String) : Screen {
-    
+
     @Composable
     override fun Content() {
         Column(
@@ -135,24 +135,27 @@ private fun SecondScreenButton() {
 ```
 
 The last thing to do is to take care of the navigator creation to avoid null-pointers in the composition.
-The flexible `Voyager`s approach allow us to choose between various default screen [transitions](https://voyager.adriel.cafe/transitions), or even create our own. For the sake of this post we will use the `SlideTransition()`.
+The flexible `Voyager`s approach allow us to choose between various default
+screen [transitions](https://voyager.adriel.cafe/transitions), or even create our own. For the sake of this post we will
+use the `SlideTransition()`.
 
 ```kotlin
 @Composable
 @Preview
 fun App() {
-  MaterialTheme {
-    Navigator(FirstScreen()) { navigator ->
-      SlideTransition(navigator)
+    MaterialTheme {
+        Navigator(FirstScreen()) { navigator ->
+            SlideTransition(navigator)
+        }
     }
-  }
 }
 ```
 
-The initial configuration is up and running, we can navigate between the screens and the data is preserved during the screen rotation.
+The initial configuration is up and running, we can navigate between the screens and the data is preserved during the
+screen rotation.
 Let's run the project on both ***Android*** and ***iOS*** to see the results.
 
-![Navigation](/blog/images/voyager_navigation.gif "Navigation")
+![Navigation](/blog/images/1_navigation.gif "Navigation")
 
 Comparing to the [Decompose](https://github.com/mkonkel/DecomposeNavigation) Voyager also have its own ViewModel
 equivalent, called the [ScreenModel](https://voyager.adriel.cafe/screenmodel) but with some lates changes in compose
@@ -171,6 +174,7 @@ class FirstScreenModel : ScreenModel {
     val greetings = "Hello from First Screen"
 }
 ```
+
 ```kotlin
 class FirstScreen : Screen {
 
@@ -182,7 +186,173 @@ class FirstScreen : Screen {
     }
 }
 ```
-Now if we would have a text input and want to store the value we should use ***state*** inside the ***ScreenModel***. So it can be recreated after screen rotation.
 
+Now if we would have a text input and want to store the value we should use ***state*** inside the ***ScreenModel***. So
+it can be recreated after screen rotation.
 
-### Summary
+### Tab Navigation
+
+To use the Tab navigation we need to add another library to our project ***voyager-tab-navigator***.
+
+```kotlin
+[libraries]
+voyager - tabs = { module = "cafe.adriel.voyager:voyager-tab-navigator", version.ref = "voyager" }
+```
+
+```kotlin
+commonMain.dependencies {
+    ...
+    implementation(libs.voyager.tabs)
+}
+```
+
+When we want to create ***Tab*** we need to usr thr `Tab` interface instead of previously seen `Screen` interface. The
+idea behind tabs is the same.
+Nevertheless, `TabNavigator` don't support the ***backPress*** and ***Stack API***.
+With the ***Tab*** interface we need to implement 2 methods:
+
+- `Content()` - the composable content of the tab
+- `options()` - the informations about current tab ***icon***, ***title*** and ***index***.
+
+Let's create the ***FirstTab*** and implement all the methods, with some default values.
+
+```kotlin
+object FirstTab : Tab {
+    @Composable
+    override fun Content() {
+        Column {
+            Text("First Tab")
+        }
+    }
+
+    override val options: TabOptions
+        @Composable
+        get() {
+            val title = remember { "First" }
+            val icon = rememberVectorPainter(Icons.Default.Home)
+
+            return remember {
+                TabOptions(
+                    index = 0u,
+                    title = title,
+                    icon = icon
+                )
+            }
+        }
+}
+```
+
+The **SecondTab*** should look exactly the same but with different content.
+
+```kotlin
+object SecondTab : Tab {
+    @Composable
+    override fun Content() {
+        Column {
+            Text("Second Tab")
+        }
+    }
+
+    override val options: TabOptions
+        @Composable
+        get() {
+            val title = remember { "Second" }
+            val icon = rememberVectorPainter(Icons.Default.AccountBox)
+
+            return remember {
+                TabOptions(
+                    index = 1u,
+                    title = title,
+                    icon = icon
+                )
+            }
+        }
+}
+```
+
+The last thing to do is to create a container for the tabs, we can follow the steps from the beginning of the post and
+create ***TabScreen***. Inside the screen we will use a ***Scaffold*** function with `bottomBar` with component called `BottomNavigation` from
+material lib. The whole content should be wrapped with the `TabNavigator` function.
+
+```kotlin
+class TabScreen : Screen {
+    @Composable
+    override fun Content() {
+        TabNavigator(FirstTab) {
+            Scaffold(
+                bottomBar = {
+                    BottomNavigation {
+
+                    }
+                }
+            ) {
+
+            }
+        }
+    }
+}
+```
+
+We can create the helper function `TabNavigationItem()` that will be using the `LocalTabNavigator`  to navigate between
+the tabs and ***BottomNavigationItem*** for creating the items.
+
+```kotlin
+    @Composable
+private fun RowScope.TabNavigationItem(tab: Tab) {
+    val tabNavigator = LocalTabNavigator.current
+
+    BottomNavigationItem(
+        selected = tabNavigator.current == tab,
+        onClick = { tabNavigator.current = tab },
+        icon = {
+            tab.options.icon?.let {
+                Icon(painter = it, contentDescription = tab.options.title)
+            }
+        }
+    )
+}
+```
+
+Now we can use the helper function.
+
+```kotlin
+BottomNavigation {
+    TabNavigationItem(FirstTab)
+    TabNavigationItem(SecondTab)
+}
+```
+
+The content of our Scaffold function should display the current tab, to do so we need to just use ***Voyagers***
+function `CurrentTab()`
+
+```kotlin
+import java.util.Currency
+
+@Composable
+override fun Content() {
+    Scaffold(
+        bottomBar = {
+            ...
+        }
+    ) {
+        CurrentTab()
+    }
+}
+```
+
+For the convenience we should add the entrypoint to any existing screen.
+
+```kotlin
+    @Composable
+private fun TabScreenButton() {
+    val navigator = LocalNavigator.currentOrThrow
+
+    Button(onClick = { navigator.push(TabScreen()) }) {
+        Text("Tabs")
+    }
+}
+```
+
+![Tab Navigation](/blog/images/2_tab_navigation.gif "Tab Navigation")
+
+## Summary
