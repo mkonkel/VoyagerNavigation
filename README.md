@@ -6,7 +6,8 @@ navigation.
 - Application should allow us to navigate from one screen to another.
 - Application should allow to pass some parameters from first to second screen.
 - Application should handle the screen rotation without loosing data.
-  ...
+- Application should handle the Tab Navigation.
+- Application should handle the async operations with coroutines.
 
 In the next posts I will also cover the [Decompose](https://github.com/mkonkel/DecomposeNavigation), Circuit, Apyx and
 Composer navigation libraries.
@@ -271,7 +272,8 @@ object SecondTab : Tab {
 ```
 
 The last thing to do is to create a container for the tabs, we can follow the steps from the beginning of the post and
-create ***TabScreen***. Inside the screen we will use a ***Scaffold*** function with `bottomBar` with component called `BottomNavigation` from
+create ***TabScreen***. Inside the screen we will use a ***Scaffold*** function with `bottomBar` with component
+called `BottomNavigation` from
 material lib. The whole content should be wrapped with the `TabNavigator` function.
 
 ```kotlin
@@ -355,4 +357,39 @@ private fun TabScreenButton() {
 
 ![Tab Navigation](/blog/images/2_tab_navigation.gif "Tab Navigation")
 
+### Coroutines
+
+The ***ScreenModel*** provides a simple way to handle the async operations with coroutines. Following
+the [documentation](https://voyager.adriel.cafe/screenmodel/coroutines-integration) we can implement a countdown timer
+toc heck how it works.
+The ***Screen*** provides a `screenModelScope` it is cancelled automatically when the screen is disposed.
+
+```kotlin
+class FirstScreenModel : ScreenModel {
+    ...
+    val countDownText = mutableStateOf<String>("0")
+
+    init {
+        screenModelScope.launch {
+            for (i in 10 downTo 0) {
+                countDownText.value = i.toString()
+                delay(1000)
+            }
+        }
+    }
+}
+```
+
+![Coroutines](/blog/images/3_coroutines.gif "Coroutines")
+
 ## Summary
+
+The `Voyager` is a great library for the navigation in the Compose Multiplatform projects. It is easy to use and
+provides various ways to navigate between the screens. The library is tightly coupled with te `Jetpack Compose` and can
+use `ScreenModel` or a `ViewModel` for handling the business logic that's really flexible and can speed up the process
+if yu used such approach in the past.
+Comparing to the [Decompose I have mentioned in previous post](https://github.com/mkonkel/DecomposeNavigation) it is
+simpler to configure and use out of the box. It requires less effort to start with, but in the other hand it is more
+tied to Compose itself.
+
+If you are looking fora navigation lib for your compose multiplatform project you definitely should give it a try!

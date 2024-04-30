@@ -33,6 +33,8 @@ class FirstScreen : Screen {
             FirstScreenButton(screenModel)
             Spacer(modifier = Modifier.height(16.dp))
             TabScreenButton()
+            Spacer(modifier = Modifier.height(16.dp))
+            Text("Countdown: ${screenModel.countDownText.value}")
         }
     }
 
