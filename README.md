@@ -9,7 +9,7 @@ navigation.
 - Application should handle the Tab Navigation.
 - Application should handle the async operations with coroutines.
 
-In the next posts I will also cover the [Decompose](https://github.com/mkonkel/DecomposeNavigation), Circuit, Apyx and
+In the next posts I will also cover the [Decompose](https://github.com/mkonkel/DecomposeNavigation), Apyx and
 Composer navigation libraries.
 
 ### The project:
