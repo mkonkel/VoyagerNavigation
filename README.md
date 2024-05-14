@@ -345,7 +345,7 @@ override fun Content() {
 For the convenience we should add the entrypoint to any existing screen.
 
 ```kotlin
-    @Composable
+@Composable
 private fun TabScreenButton() {
     val navigator = LocalNavigator.currentOrThrow
 
@@ -388,8 +388,11 @@ The `Voyager` is a great library for the navigation in the Compose Multiplatform
 provides various ways to navigate between the screens. The library is tightly coupled with te `Jetpack Compose` and can
 use `ScreenModel` or a `ViewModel` for handling the business logic that's really flexible and can speed up the process
 if yu used such approach in the past.
-Comparing to the [Decompose I have mentioned in previous post](https://github.com/mkonkel/DecomposeNavigation) it is
+Comparing to the [Decompose](https://github.com/mkonkel/DecomposeNavigation) I have mentioned in previous post it is
 simpler to configure and use out of the box. It requires less effort to start with, but in the other hand it is more
-tied to Compose itself.
+tied to Compose itself. Other library for compose multiplatform navigation
+is [Appyx](https://github.com/mkonkel/AppyxNavigation) that has lot of similarities to the Voyager. It also is closely
+connected to compose, and provide a lot of flexible faetures that can be used in the application. But i find myself more
+comfortable with the Voyager, it is more intuitive.
 
 If you are looking fora navigation lib for your compose multiplatform project you definitely should give it a try!
