@@ -25,7 +25,7 @@ data class SecondScreen(val greetings: String) : Screen {
         ) {
             Text("First screen")
             Spacer(modifier = Modifier.height(16.dp))
-            Text("Greetings: $greetings}")
+            Text("Greetings: $greetings")
             SecondScreenButton()
         }
     }

@@ -29,7 +29,7 @@ voyager - transitions = { module = "cafe.adriel.voyager:voyager-transitions", ve
 ```
 
 ```kotlin
-        commonMain.dependencies {
+commonMain.dependencies {
     ...
 
     implementation(libs.voyager.navigator)
@@ -92,8 +92,8 @@ data class SecondScreen(val greetings: String) : Screen {
 
 Second most important thing in the Voyager is the [Navigator](https://voyager.adriel.cafe/navigation#navigator) a
 compose function build upon the compose internals. The navigator manages ***lifecycle***, ***backPress***,
-*StateRestoration*** and the ***navigation*** itself.
-To obtain navigator in any `Screen` we want, we should use the ***LocalNavigator*** in the local composition.
+***StateRestoration*** and the ***navigation*** itself.
+To obtain navigator in any `Screen`, we should use the ***LocalNavigator*** in the local composition.
 As all things where we use in the [CompositionLocal](https://developer.android.com/develop/ui/compose/compositionlocal)
 it has to be provided in the root of the composition - the `App()` function.
 
@@ -142,7 +142,6 @@ use the `SlideTransition()`.
 
 ```kotlin
 @Composable
-@Preview
 fun App() {
     MaterialTheme {
         Navigator(FirstScreen()) { navigator ->
@@ -243,7 +242,7 @@ object FirstTab : Tab {
 }
 ```
 
-The **SecondTab*** should look exactly the same but with different content.
+The ***SecondTab*** should look exactly the same but with different content.
 
 ```kotlin
 object SecondTab : Tab {
@@ -284,11 +283,11 @@ class TabScreen : Screen {
             Scaffold(
                 bottomBar = {
                     BottomNavigation {
-
+                       // items
                     }
                 }
             ) {
-
+               // content
             }
         }
     }
@@ -299,7 +298,7 @@ We can create the helper function `TabNavigationItem()` that will be using the `
 the tabs and ***BottomNavigationItem*** for creating the items.
 
 ```kotlin
-    @Composable
+@Composable
 private fun RowScope.TabNavigationItem(tab: Tab) {
     val tabNavigator = LocalTabNavigator.current
 
@@ -328,8 +327,6 @@ The content of our Scaffold function should display the current tab, to do so we
 function `CurrentTab()`
 
 ```kotlin
-import java.util.Currency
-
 @Composable
 override fun Content() {
     Scaffold(
@@ -360,8 +357,7 @@ private fun TabScreenButton() {
 ### Coroutines
 
 The ***ScreenModel*** provides a simple way to handle the async operations with coroutines. Following
-the [documentation](https://voyager.adriel.cafe/screenmodel/coroutines-integration) we can implement a countdown timer
-toc heck how it works.
+the [documentation](https://voyager.adriel.cafe/screenmodel/coroutines-integration) we can implement a countdown timer to check how it works.
 The ***Screen*** provides a `screenModelScope` it is cancelled automatically when the screen is disposed.
 
 ```kotlin
@@ -385,7 +381,7 @@ class FirstScreenModel : ScreenModel {
 ## Summary
 
 The `Voyager` is a great library for the navigation in the Compose Multiplatform projects. It is easy to use and
-provides various ways to navigate between the screens. The library is tightly coupled with te `Jetpack Compose` and can
+provides various ways to navigate between the screens. The library is tightly coupled with the `Jetpack Compose` and can
 use `ScreenModel` or a `ViewModel` for handling the business logic that's really flexible and can speed up the process
 if yu used such approach in the past.
 
